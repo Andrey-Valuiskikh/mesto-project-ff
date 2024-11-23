@@ -29,7 +29,10 @@ const profileDescription = document.querySelector(".profile__description");
 const cardFormEdit = document.forms["edit-profile"];
 const profileNameInput = cardFormEdit.elements.name;
 const profileDescriptionInput = cardFormEdit.elements.description;
-
+profileNameInput.value = document.querySelector(".profile__title").textContent;
+profileDescriptionInput.value = document.querySelector(
+  ".profile__description"
+).textContent;
 // @todo: Вывести карточки на страницу
 
 initialCards.forEach((cardnum) => {
@@ -41,22 +44,10 @@ initialCards.forEach((cardnum) => {
 editPopapButton.addEventListener("click", (evt) => {
   openPopup(popupTypeEdit);
 });
-// ,closePopupButton.addEventListener('click',(evt) => {
-//   closePopup(popupTypeEdit);
-// } ), popupTypeEdit.addEventListener('click', (evt) => {
-//   evt.target.classList.remove('popup_is-opened');
-// }));
-
-// открытие модального окна добавить профиль
 
 addProfileButton.addEventListener("click", (evt) => {
   openPopup(popupTypeNewCard);
 });
-// ,closePopupNewcardButton.addEventListener('click',(evt) => {
-//   closePopup(popupTypeNewCard);
-// } ), popupTypeNewCard.addEventListener('click',(evt) =>{
-//   evt.target.classList.remove('popup_is-opened');
-// }));
 
 function handleCardImageClick(evt) {
   popupImageImage.src = evt.currentTarget.src;
@@ -75,13 +66,12 @@ function handleCardFormSubmit(evt) {
       },
       cardTemplate,
       deleteCard,
-      onLike,
       handleCardImageClick
     )
   );
   cardForm.reset();
   closePopup(popupTypeNewCard);
-};
+}
 
 cardForm.addEventListener("submit", handleCardFormSubmit);
 
@@ -90,6 +80,6 @@ function handleProfileFormSubmit(evt) {
   profileName.textContent = profileNameInput.value;
   profileDescription.textContent = profileDescriptionInput.value;
   closePopup(popupTypeEdit);
-};
+}
 
 cardFormEdit.addEventListener("submit", handleProfileFormSubmit);

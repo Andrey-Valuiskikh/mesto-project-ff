@@ -19,14 +19,12 @@ function handleEscKeydown(evt) {
 }
 
 function handlePopupClick(evt) {
-  if (evt.target.classList.contains(".popup_is-opened")) {
-    closePopup(evt);
+  if (evt.target.classList.contains("popup_is-opened")) {
+    closePopup(evt.target);
   }
-  if (evt.target.classList.contains(".popup__close")) {
-     closePopup(evt.target.closest(".popup_is-opened"));
+  if (evt.target.classList.contains("popup__close")) {
+    closePopup(evt.target.closest(".popup_is-opened"));
   }
-  return closePopup(evt.target.closest(".popup_is-opened"));
 }
-
 
 export { openPopup, closePopup };
