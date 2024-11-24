@@ -9,11 +9,9 @@ const placesList = document.querySelector(".places__list");
 
 const editPopapButton = document.querySelector(".profile__edit-button");
 const popupTypeEdit = document.querySelector(".popup_type_edit");
-const closePopupButton = popupTypeEdit.querySelector(".popup__close");
 
 const addProfileButton = document.querySelector(".profile__add-button");
 const popupTypeNewCard = document.querySelector(".popup_type_new-card");
-const closePopupNewcardButton = popupTypeNewCard.querySelector(".popup__close");
 
 const popupImageImage = document.querySelector(".popup__image");
 const popupImageCaption = document.querySelector(".popup__caption");
@@ -29,10 +27,7 @@ const profileDescription = document.querySelector(".profile__description");
 const cardFormEdit = document.forms["edit-profile"];
 const profileNameInput = cardFormEdit.elements.name;
 const profileDescriptionInput = cardFormEdit.elements.description;
-profileNameInput.value = document.querySelector(".profile__title").textContent;
-profileDescriptionInput.value = document.querySelector(
-  ".profile__description"
-).textContent;
+
 // @todo: Вывести карточки на страницу
 
 initialCards.forEach((cardnum) => {
@@ -42,6 +37,9 @@ initialCards.forEach((cardnum) => {
 });
 
 editPopapButton.addEventListener("click", (evt) => {
+  profileNameInput.value = profileName.textContent;
+  profileDescriptionInput.value = profileDescription.textContent;
+
   openPopup(popupTypeEdit);
 });
 
