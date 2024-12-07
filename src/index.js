@@ -3,6 +3,16 @@ import { initialCards } from "./scripts/components/cards.js";
 import "./pages/index.css";
 import { createCard, deleteCard, onLike } from "./scripts/components/card.js";
 import { openPopup, closePopup } from "./scripts/components/modal.js";
+import { clearValidation, enableValidation } from "./scripts/components/validation.js";
+
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible',
+};
 
 const cardTemplate = document.querySelector("#card-template").content;
 const placesList = document.querySelector(".places__list");
@@ -68,6 +78,7 @@ function handleCardFormSubmit(evt) {
     )
   );
   cardForm.reset();
+  clearValidation();
   closePopup(popupTypeNewCard);
 }
 
@@ -81,3 +92,10 @@ function handleProfileFormSubmit(evt) {
 }
 
 cardFormEdit.addEventListener("submit", handleProfileFormSubmit);
+
+enableValidation(validationConfig);
+
+import { apigetCards } from "./scripts/components/api.js";
+
+
+apigetCards();
