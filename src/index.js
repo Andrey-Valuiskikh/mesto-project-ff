@@ -95,7 +95,17 @@ cardFormEdit.addEventListener("submit", handleProfileFormSubmit);
 
 enableValidation(validationConfig);
 
-import { apigetCards } from "./scripts/components/api.js";
+import { apigetCards, apigetProfile } from "./scripts/components/api.js";
 
 
-apigetCards();
+apigetCards().then((res)=>{
+  res.forEach((card)=>{
+    placesList.append(
+      createCard(card, cardTemplate, deleteCard, handleCardImageClick)
+    )
+  })
+  
+})
+
+apigetProfile()
+
