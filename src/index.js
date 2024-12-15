@@ -3,15 +3,18 @@ import { initialCards } from "./scripts/components/cards.js";
 import "./pages/index.css";
 import { createCard, deleteCard, onLike } from "./scripts/components/card.js";
 import { openPopup, closePopup } from "./scripts/components/modal.js";
-import { clearValidation, enableValidation } from "./scripts/components/validation.js";
+import {
+  clearValidation,
+  enableValidation,
+} from "./scripts/components/validation.js";
 
 const validationConfig = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible',
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
 };
 
 const cardTemplate = document.querySelector("#card-template").content;
@@ -33,27 +36,34 @@ const cardLinkInput = cardForm.elements.link;
 
 const profileName = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
+const profileImage = document.querySelector(".profile__image");
 
 const cardFormEdit = document.forms["edit-profile"];
 const profileNameInput = cardFormEdit.elements.name;
 const profileDescriptionInput = cardFormEdit.elements.description;
 
-// @todo: Вывести карточки на страницу
+const popupEditAvatar = document.querySelector(".popup_type_new-avatar");
+const avatarForm = document.forms["edit-avatar"];
+const avatarFormInput = avatarForm.elements.link;
+const avatarEditButton = document.querySelector(".profile__image_edit-button");
 
-initialCards.forEach((cardnum) => {
-  placesList.append(
-    createCard(cardnum, cardTemplate, deleteCard, handleCardImageClick)
-  );
-});
+let myId = "";
+
 
 editPopapButton.addEventListener("click", (evt) => {
   profileNameInput.value = profileName.textContent;
   profileDescriptionInput.value = profileDescription.textContent;
-
+  clearValidation(cardFormEdit, validationConfig);
   openPopup(popupTypeEdit);
 });
 
+avatarEditButton.addEventListener("click", () => {
+  clearValidation(avatarForm, validationConfig);
+  openPopup(popupEditAvatar);
+});
+
 addProfileButton.addEventListener("click", (evt) => {
+  clearValidation(cardForm, validationConfig);
   openPopup(popupTypeNewCard);
 });
 
@@ -66,46 +76,78 @@ function handleCardImageClick(evt) {
 
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
-  placesList.prepend(
-    createCard(
-      {
-        name: cardNameInput.value,
-        link: cardLinkInput.value,
-      },
-      cardTemplate,
-      deleteCard,
-      handleCardImageClick
-    )
+  apiaddCard({ name: cardNameInput.value, link: cardLinkInput.value }).then(
+    (newCardData) => {
+      
+
+      placesList.prepend(
+        createCard(
+          newCardData,
+          cardTemplate,
+          deleteCard,
+          handleCardImageClick,
+          myId
+        )
+      );
+      cardForm.reset();
+     
+      closePopup(popupTypeNewCard);
+    }
   );
-  cardForm.reset();
-  clearValidation();
-  closePopup(popupTypeNewCard);
+}
+
+avatarForm.addEventListener("submit", handleAvatarFormSubmit);
+
+function handleAvatarFormSubmit(evt) {
+  evt.preventDefault();
+  apiupdateAvatar(avatarFormInput.value).then((userData) => {
+    profileImage.style.backgroundImage = `url(${userData.avatar})`;
+    closePopup(popupEditAvatar);
+    avatarForm.reset();
+  });
 }
 
 cardForm.addEventListener("submit", handleCardFormSubmit);
 
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
-  profileName.textContent = profileNameInput.value;
-  profileDescription.textContent = profileDescriptionInput.value;
-  closePopup(popupTypeEdit);
+  apieditProfile({
+    name: profileNameInput.value,
+    about: profileDescriptionInput.value,
+  }).then((userData) => {
+    profileName.textContent = userData.name;
+    profileDescription.textContent = userData.about;
+    
+    closePopup(popupTypeEdit);
+  });
+  
 }
 
 cardFormEdit.addEventListener("submit", handleProfileFormSubmit);
 
 enableValidation(validationConfig);
 
-import { apigetCards, apigetProfile } from "./scripts/components/api.js";
+import {
+  apigetCards,
+  apigetProfile,
+  apieditProfile,
+  apiLikeCard,
+  apiupdateAvatar,
+ 
+  apideleteCard,
+  apiaddCard,
+} from "./scripts/components/api.js";
 
-
-apigetCards().then((res)=>{
-  res.forEach((card)=>{
+Promise.all([apigetProfile(), apigetCards()]).then(([userData, cards]) => {
+  profileName.textContent = userData.name;
+  profileDescription.textContent = userData.about;
+  profileImage.style.backgroundImage = `url(${userData.avatar})`;
+  myId = userData._id;
+  cards.forEach((card) => {
     placesList.append(
-      createCard(card, cardTemplate, deleteCard, handleCardImageClick)
-    )
-  })
-  
-})
+      createCard(card, cardTemplate, deleteCard, handleCardImageClick, myId)
+    );
+  });
+});
 
-apigetProfile()
 

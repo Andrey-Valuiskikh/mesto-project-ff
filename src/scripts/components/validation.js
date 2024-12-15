@@ -1,14 +1,3 @@
-// function enableValidation
-
-// function clearValidation
-
-// очистка ошибок валидации вызовом clearValidation
-
-// clearValidation(profileForm, validationConfig);
-
-// включение валидации вызовом enableValidation
-// все настройки передаются при вызове
-
 
 
 // enableValidation({
