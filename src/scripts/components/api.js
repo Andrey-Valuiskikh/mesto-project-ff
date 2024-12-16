@@ -40,9 +40,7 @@ function apieditProfile({ name, about }) {
 }
 
 function apiaddCard({ name, link }) {
-  return checkImgUrl(link)
-    .then(
-      fetch(`${config.baseUrl}/cards`, {
+  return fetch(`${config.baseUrl}/cards`, {
         method: "POST",
         headers: config.headers,
         body: JSON.stringify({
@@ -50,7 +48,7 @@ function apiaddCard({ name, link }) {
           link,
         }),
       })
-    )
+   
     .then(handleRes);
 }
 

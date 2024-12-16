@@ -49,6 +49,14 @@ const avatarEditButton = document.querySelector(".profile__image_edit-button");
 
 let myId = "";
 
+function renderLoading({ buttonElement, isLoading }) {
+  if (isLoading) {
+    buttonElement.textContent = 'Сохранение...';
+  } else {
+    buttonElement.textContent = 'Сохранить';
+  }
+};
+
 
 editPopapButton.addEventListener("click", (evt) => {
   profileNameInput.value = profileName.textContent;
@@ -74,8 +82,15 @@ function handleCardImageClick(evt) {
   openPopup(popupTypeImage);
 }
 
+cardForm.addEventListener("submit", handleCardFormSubmit);
+
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
+  renderLoading({
+    buttonElement: cardForm.querySelector('.button'), 
+    isLoading: true
+  });
+
   apiaddCard({ name: cardNameInput.value, link: cardLinkInput.value }).then(
     (newCardData) => {
       
@@ -93,24 +108,50 @@ function handleCardFormSubmit(evt) {
      
       closePopup(popupTypeNewCard);
     }
-  );
+  )
+  .catch((error) => {
+    console.error(error);
+  })
+  .finally(() => {
+    renderLoading({
+      buttonElement: cardForm.querySelector('.button'),
+      isLoading: false,
+    });
+  });
 }
 
 avatarForm.addEventListener("submit", handleAvatarFormSubmit);
 
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
+  renderLoading({
+    buttonElement: avatarForm.querySelector('.button'),
+    isLoading: true,
+  });
   apiupdateAvatar(avatarFormInput.value).then((userData) => {
     profileImage.style.backgroundImage = `url(${userData.avatar})`;
     closePopup(popupEditAvatar);
     avatarForm.reset();
+  })
+  .catch((error) => {
+    console.error(error);
+  })
+  .finally(() => {
+    renderLoading({
+      buttonElement: avatarForm.querySelector('.button'),
+      isLoading: false,
+    });
   });
 }
 
-cardForm.addEventListener("submit", handleCardFormSubmit);
+cardFormEdit.addEventListener("submit", handleProfileFormSubmit);
 
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
+  renderLoading({
+    buttonElement: cardFormEdit.querySelector('.button'),
+    isLoading: true
+  });
   apieditProfile({
     name: profileNameInput.value,
     about: profileDescriptionInput.value,
@@ -119,11 +160,20 @@ function handleProfileFormSubmit(evt) {
     profileDescription.textContent = userData.about;
     
     closePopup(popupTypeEdit);
+  })
+  .catch((error) => {
+    console.error(error);
+  })
+  .finally(() => {
+    renderLoading({
+      buttonElement: cardFormEdit.querySelector('.button'),
+      isLoading: false,
+    });
   });
   
 }
 
-cardFormEdit.addEventListener("submit", handleProfileFormSubmit);
+
 
 enableValidation(validationConfig);
 
@@ -133,7 +183,6 @@ import {
   apieditProfile,
   apiLikeCard,
   apiupdateAvatar,
- 
   apideleteCard,
   apiaddCard,
 } from "./scripts/components/api.js";
@@ -149,5 +198,7 @@ Promise.all([apigetProfile(), apigetCards()]).then(([userData, cards]) => {
     );
   });
 });
+
+
 
 
