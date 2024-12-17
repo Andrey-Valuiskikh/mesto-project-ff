@@ -1,5 +1,5 @@
 // @todo: Темплейт карточки
-import { initialCards } from "./scripts/components/cards.js";
+//  { initialCards } from "./scripts/components/cards.js";
 import "./pages/index.css";
 import { createCard, deleteCard, onLike } from "./scripts/components/card.js";
 import { openPopup, closePopup } from "./scripts/components/modal.js";
@@ -48,8 +48,9 @@ const avatarFormInput = avatarForm.elements.link;
 const avatarEditButton = document.querySelector(".profile__image_edit-button");
 
 let myId = "";
-
+ 
 function renderLoading({ buttonElement, isLoading }) {
+  
   if (isLoading) {
     buttonElement.textContent = 'Сохранение...';
   } else {
@@ -86,10 +87,10 @@ cardForm.addEventListener("submit", handleCardFormSubmit);
 
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
-  renderLoading({
-    buttonElement: cardForm.querySelector('.button'), 
+  renderLoading( {
+    buttonElement: evt.submitter , 
     isLoading: true
-  });
+  },evt);
 
   apiaddCard({ name: cardNameInput.value, link: cardLinkInput.value }).then(
     (newCardData) => {
@@ -114,9 +115,9 @@ function handleCardFormSubmit(evt) {
   })
   .finally(() => {
     renderLoading({
-      buttonElement: cardForm.querySelector('.button'),
+      buttonElement: evt.submitter ,
       isLoading: false,
-    });
+    }, evt);
   });
 }
 
@@ -125,9 +126,9 @@ avatarForm.addEventListener("submit", handleAvatarFormSubmit);
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
   renderLoading({
-    buttonElement: avatarForm.querySelector('.button'),
+    buttonElement: evt.submitter ,
     isLoading: true,
-  });
+  }, evt);
   apiupdateAvatar(avatarFormInput.value).then((userData) => {
     profileImage.style.backgroundImage = `url(${userData.avatar})`;
     closePopup(popupEditAvatar);
@@ -138,9 +139,9 @@ function handleAvatarFormSubmit(evt) {
   })
   .finally(() => {
     renderLoading({
-      buttonElement: avatarForm.querySelector('.button'),
+      buttonElement: evt.submitter ,
       isLoading: false,
-    });
+    }, evt);
   });
 }
 
@@ -149,9 +150,9 @@ cardFormEdit.addEventListener("submit", handleProfileFormSubmit);
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
   renderLoading({
-    buttonElement: cardFormEdit.querySelector('.button'),
+    buttonElement: evt.submitter ,
     isLoading: true
-  });
+  }, evt);
   apieditProfile({
     name: profileNameInput.value,
     about: profileDescriptionInput.value,
@@ -166,9 +167,9 @@ function handleProfileFormSubmit(evt) {
   })
   .finally(() => {
     renderLoading({
-      buttonElement: cardFormEdit.querySelector('.button'),
+      buttonElement: evt.submitter ,
       isLoading: false,
-    });
+    }, evt);
   });
   
 }

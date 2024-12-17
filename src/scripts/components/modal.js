@@ -1,14 +1,17 @@
-function openPopup(evt) {
-  evt.classList.add("popup_is-animated");
-  evt.classList.add("popup_is-opened");
+function openPopup(popup) {
+  popup.classList.add("popup_is-animated");
+  setTimeout(() => {
+  popup.classList.add("popup_is-opened"),
+  1});
+
   document.addEventListener("keydown", handleEscKeydown);
-  evt.addEventListener("click", handlePopupClick);
+  popup.addEventListener("click", handlePopupClick);
 }
 
-function closePopup(evt) {
+function closePopup(popup) {
   document.removeEventListener("keydown", handleEscKeydown);
-  evt.removeEventListener("click", handlePopupClick);
-  evt.classList.remove("popup_is-opened");
+  popup.removeEventListener("click", handlePopupClick);
+  popup.classList.remove("popup_is-opened");
 }
 
 function handleEscKeydown(evt) {

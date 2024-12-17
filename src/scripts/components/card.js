@@ -15,7 +15,9 @@ function createCard(data, template, deleteCardButton, openPopup, userId) {
   cardTitle.textContent = data.name;
   cardLikeCount.textContent = data.likes.length;
 
-  const isCardLiked = data.likes.find((card) => card["_id"] === userId);
+ const isCardLiked = data.likes.find((card) => card["_id"] === userId);
+
+// console.log( isCardLiked, data.likes, userId);
 
   if (userId !== data.owner._id) {
     deleteButton.style.display = "none";
@@ -25,9 +27,12 @@ function createCard(data, template, deleteCardButton, openPopup, userId) {
     });
   }
 
+  
+
   if (isCardLiked) {
-    likeButton.classList.add(".card__like-button_is-active");
+    likeButton.classList.add("card__like-button_is-active");
   }
+
   likeButton.addEventListener("click", (evt) => {
     onLike(likeButton, data._id, cardLikeCount);
   });
@@ -35,10 +40,13 @@ function createCard(data, template, deleteCardButton, openPopup, userId) {
   return workpieceCard;
 }
 
-const deleteCard = (evt, id) => {
+const deleteCard = (card, id) => {
   apideleteCard(id).then((data) => {
-    evt.remove();
-  });
+    card.remove();
+  })
+  .catch((error) => {
+    console.error(error);
+  })
 };
 
 function onLike(button, id, LikeCount) {
@@ -46,7 +54,10 @@ function onLike(button, id, LikeCount) {
   apiLikeCard(id, isliked).then((cardData) => {
     button.classList.toggle("card__like-button_is-active");
     LikeCount.textContent = cardData.likes.length;
-  });
+  })
+  .catch((error) => {
+    console.error(error);
+  })
 }
 
 export { createCard, deleteCard, onLike };
