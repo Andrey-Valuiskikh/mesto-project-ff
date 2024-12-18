@@ -2,7 +2,7 @@
 import { data } from "jquery";
 import { apideleteCard, apiLikeCard } from "./api";
 
-function createCard(data, template, deleteCardButton, openPopup, userId) {
+function createCard({data, template, deleteCardButton, openPopup, userId}) {
   const workpieceCard = template.querySelector(".card").cloneNode(true);
   const cardTitle = workpieceCard.querySelector(".card__title");
   const cardImage = workpieceCard.querySelector(".card__image");

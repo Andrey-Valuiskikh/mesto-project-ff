@@ -7,6 +7,15 @@ import {
   clearValidation,
   enableValidation,
 } from "./scripts/components/validation.js";
+import {
+  apigetCards,
+  apigetProfile,
+  apieditProfile,
+  apiLikeCard,
+  apiupdateAvatar,
+  apideleteCard,
+  apiaddCard,
+} from "./scripts/components/api.js";
 
 const validationConfig = {
   formSelector: ".popup__form",
@@ -50,7 +59,7 @@ const avatarEditButton = document.querySelector(".profile__image_edit-button");
 let myId = "";
  
 function renderLoading({ buttonElement, isLoading }) {
-  
+   
   if (isLoading) {
     buttonElement.textContent = 'Сохранение...';
   } else {
@@ -90,19 +99,15 @@ function handleCardFormSubmit(evt) {
   renderLoading( {
     buttonElement: evt.submitter , 
     isLoading: true
-  },evt);
+  });
 
   apiaddCard({ name: cardNameInput.value, link: cardLinkInput.value }).then(
     (newCardData) => {
       
 
       placesList.prepend(
-        createCard(
-          newCardData,
-          cardTemplate,
-          deleteCard,
-          handleCardImageClick,
-          myId
+        createCard({data: newCardData , template: cardTemplate , deleteCardButton: deleteCard, openPopup: handleCardImageClick, userId: myId}
+         
         )
       );
       cardForm.reset();
@@ -117,7 +122,7 @@ function handleCardFormSubmit(evt) {
     renderLoading({
       buttonElement: evt.submitter ,
       isLoading: false,
-    }, evt);
+    });
   });
 }
 
@@ -128,7 +133,7 @@ function handleAvatarFormSubmit(evt) {
   renderLoading({
     buttonElement: evt.submitter ,
     isLoading: true,
-  }, evt);
+  });
   apiupdateAvatar(avatarFormInput.value).then((userData) => {
     profileImage.style.backgroundImage = `url(${userData.avatar})`;
     closePopup(popupEditAvatar);
@@ -141,7 +146,7 @@ function handleAvatarFormSubmit(evt) {
     renderLoading({
       buttonElement: evt.submitter ,
       isLoading: false,
-    }, evt);
+    });
   });
 }
 
@@ -152,7 +157,7 @@ function handleProfileFormSubmit(evt) {
   renderLoading({
     buttonElement: evt.submitter ,
     isLoading: true
-  }, evt);
+  });
   apieditProfile({
     name: profileNameInput.value,
     about: profileDescriptionInput.value,
@@ -169,7 +174,7 @@ function handleProfileFormSubmit(evt) {
     renderLoading({
       buttonElement: evt.submitter ,
       isLoading: false,
-    }, evt);
+    });
   });
   
 }
@@ -178,15 +183,6 @@ function handleProfileFormSubmit(evt) {
 
 enableValidation(validationConfig);
 
-import {
-  apigetCards,
-  apigetProfile,
-  apieditProfile,
-  apiLikeCard,
-  apiupdateAvatar,
-  apideleteCard,
-  apiaddCard,
-} from "./scripts/components/api.js";
 
 Promise.all([apigetProfile(), apigetCards()]).then(([userData, cards]) => {
   profileName.textContent = userData.name;
@@ -195,11 +191,13 @@ Promise.all([apigetProfile(), apigetCards()]).then(([userData, cards]) => {
   myId = userData._id;
   cards.forEach((card) => {
     placesList.append(
-      createCard(card, cardTemplate, deleteCard, handleCardImageClick, myId)
+      createCard({data: card , template: cardTemplate , deleteCardButton: deleteCard, openPopup: handleCardImageClick, userId: myId})
     );
   });
-});
-
+})
+.catch((error) => {
+  console.error(error);
+})
 
 
 
